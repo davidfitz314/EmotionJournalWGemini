@@ -1,16 +1,8 @@
-# myapp
+# Emotion Journal W Gemini
 
-A new Flutter project.
+Mental health is a serious issue, this app is designed to help fulfil your mental health needs through individualized Generative AI resources.
 
-## Getting Started
+Track your emotions for each day, get reminders, chat with your own personalized Mental Health Counselor whose expertise is what you care about. 
+Get helpful exercises and calming techniques based on how you feel that day, from Mindfullness, Yoga, Breathing Exercises, Qi Gong and more your ML counselor is personalized to your beliefs and needs.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+© 2024 David Fitzgerald
