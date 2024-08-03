@@ -36,6 +36,7 @@ class JournalDb {
           ${JournalFields.id} ${JournalFields.idType},
           ${JournalFields.title} ${JournalFields.textType},
           ${JournalFields.createdDate} ${JournalFields.textType}
+          ${JournalFields.content} ${JournalFields.textType}
         )
       ''');
   }

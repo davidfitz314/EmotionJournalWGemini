@@ -7,7 +7,7 @@ class JournalFields {
   static const String id = '_id';
   static const String title = 'title';
   // static const String number = 'number';
-  // static const String content = 'content';
+  static const String content = 'content';
   // static const String isFavorite = 'is_favorite';
   static const String createdDate = 'created_date';
 }
