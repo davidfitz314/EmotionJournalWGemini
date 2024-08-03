@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/db/journal_db.dart';
+import 'package:myapp/db/journal_model.dart';
 
 class EmotionSelector extends StatefulWidget {
   const EmotionSelector({super.key});
@@ -8,6 +10,8 @@ class EmotionSelector extends StatefulWidget {
 }
 
 class _EmotionSelectorState extends State<EmotionSelector> {
+  JournalDb journalDb = JournalDb.instance;
+
   List<String> emotions = [
     'Joy', 'Love', 'Surprise', // Positive emotions
     'Neutral', 'Trust', // Neutral emotions
@@ -38,6 +42,21 @@ class _EmotionSelectorState extends State<EmotionSelector> {
       });
     });
     _controller.text = "";
+  }
+
+  createJournalEntry() {
+    String temppTitle = "";
+    selectedEmotions.forEach((key, value) {
+      if (value) {
+        temppTitle += '$key ';
+      }
+      ;
+    });
+    DateTime createdDate = DateTime.now();
+    final model = JournalModel(
+        title: temppTitle, createdDate: createdDate, content: _controller.text);
+    journalDb.create(model);
+    // print(model.toJson());
   }
 
   @override
@@ -105,21 +124,28 @@ class _EmotionSelectorState extends State<EmotionSelector> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.save),
-                onPressed: () {
-                  // Save action
-                },
+              Visibility(
+                visible: isAnySelected,
+                child: IconButton(
+                  icon: const Icon(Icons.save),
+                  onPressed: () {
+                    // Save action
+                    createJournalEntry();
+                  },
+                ),
+              ),
+              Visibility(
+                visible: isAnySelected,
+                child: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    handleReset();
+                    // Another action
+                  },
+                ),
               ),
               IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  handleReset();
-                  // Another action
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.textsms),
+                icon: const Icon(Icons.chat),
                 onPressed: () {
                   // Chat action
                 },

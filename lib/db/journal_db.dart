@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:myapp/db/journal_fields.dart';
 import 'package:myapp/db/journal_model.dart';
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class JournalDb {
@@ -22,7 +23,7 @@ class JournalDb {
 
   Future<Database> _initDatabase() async {
     final databasePath = await getDatabasesPath();
-    final path = '$databasePath/db/journal_db.db';
+    final path = join(databasePath, 'journal_db.db');
     return await openDatabase(
       path,
       version: 1,
@@ -35,7 +36,7 @@ class JournalDb {
         CREATE TABLE ${JournalFields.tableName} (
           ${JournalFields.id} ${JournalFields.idType},
           ${JournalFields.title} ${JournalFields.textType},
-          ${JournalFields.createdDate} ${JournalFields.textType}
+          ${JournalFields.createdDate} ${JournalFields.textType},
           ${JournalFields.content} ${JournalFields.textType}
         )
       ''');

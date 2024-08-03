@@ -1,13 +1,13 @@
 import 'package:myapp/db/journal_fields.dart';
 
 class JournalModel {
-  final int id;
+  final int? id;
   final String title;
-  final DateTime createdDate;
+  final DateTime? createdDate;
   final String content;
 
   const JournalModel(
-      {required this.id,
+      {this.id,
       required this.title,
       required this.createdDate,
       required this.content});
@@ -24,7 +24,7 @@ class JournalModel {
   Map<String, Object?> toJson() => {
         JournalFields.id: id,
         JournalFields.title: title,
-        JournalFields.createdDate: createdDate,
+        JournalFields.createdDate: createdDate?.toIso8601String(),
         JournalFields.content: content,
       };
 
@@ -43,9 +43,9 @@ class JournalModel {
       );
 
   factory JournalModel.fromJson(Map<String, Object?> json) => JournalModel(
-        id: json[JournalFields.id] as int,
+        id: json[JournalFields.id] as int?,
         title: json[JournalFields.title] as String,
-        createdDate: json[JournalFields.createdDate] as DateTime,
+        createdDate: DateTime.tryParse(json[JournalFields.createdDate] as String? ?? ''),
         content: json[JournalFields.content] as String,
       );
 }
