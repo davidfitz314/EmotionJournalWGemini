@@ -47,7 +47,7 @@ class _MeditationSelectorState extends State<MeditationSelector> {
   @override
   Widget build(BuildContext context) {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           const Text(
             'Focus',
@@ -57,6 +57,7 @@ class _MeditationSelectorState extends State<MeditationSelector> {
               backgroundColor: Color.fromARGB(0, 0, 0, 0),
             ),
           ),
+          Spacer(),
           DropdownButton<String>(
             value: _meditationStyleSelection,
             icon: const Icon(Icons.arrow_downward),

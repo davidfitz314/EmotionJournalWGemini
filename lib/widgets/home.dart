@@ -11,7 +11,10 @@ class Home extends StatelessWidget {
       body: Stack(children: [
         GradientBg(),
         Center(
-          child: EmotionSelector(),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+            child: EmotionSelector(),
+          ),
         ),
       ]),
     );

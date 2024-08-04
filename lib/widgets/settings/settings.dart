@@ -30,14 +30,27 @@ class SettingsList extends StatelessWidget {
             padding: const EdgeInsets.all(20.0),
             child: ListView(children: const <Widget>[
               SubtitleWithLine(title: "Mindful ML Advisor"),
-              MeditationSelector(),
               Padding(
-                padding: EdgeInsets.only(bottom: 30),
-                child: PlaybackSettings(),
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 10),
+                child: MeditationSelector(),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 20),
+                child: PlaybackSettingsSpeed(),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 30),
+                child: PlaybackSettingsVoice(),
               ),
               SubtitleWithLine(title: "General Settings"),
-              GeneralSettings(),
-              NotificationSettings(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+                child: GeneralSettings(),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+                child: NotificationSettings(),
+              ),
             ])));
   }
 }

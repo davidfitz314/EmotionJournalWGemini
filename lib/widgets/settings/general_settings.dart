@@ -43,41 +43,40 @@ class _GeneralSettingsState extends State<GeneralSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          const Text(
-            'Reminders:',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              backgroundColor: Color.fromARGB(0, 0, 0, 0),
-            ),
-          ),
-          DropdownButton<String>(
-            value: _remindersDurationSelection,
-            icon: const Icon(Icons.arrow_downward),
-            elevation: 16,
-            // style: const TextStyle(color: Colors.deepPurple),
-            underline: Container(
-              height: 2,
-              // color: Colors.deepPurpleAccent,
-            ),
-            onChanged: (String? value) {
-              // This is called when the user selects an item.
-              setState(() {
-                _remindersDurationSelection = value!;
-                _saveSettings(value);
-              });
-            },
-            items: list.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          )
-        ]);
+    return Row(children: <Widget>[
+      const Text(
+        'Reminders:',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          backgroundColor: Color.fromARGB(0, 0, 0, 0),
+        ),
+      ),
+      const Spacer(),
+      DropdownButton<String>(
+        value: _remindersDurationSelection,
+        icon: const Icon(Icons.arrow_downward),
+        elevation: 16,
+        // style: const TextStyle(color: Colors.deepPurple),
+        underline: Container(
+          height: 2,
+          // color: Colors.deepPurpleAccent,
+        ),
+        onChanged: (String? value) {
+          // This is called when the user selects an item.
+          setState(() {
+            _remindersDurationSelection = value!;
+            _saveSettings(value);
+          });
+        },
+        items: list.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      )
+    ]);
   }
 }
 
@@ -89,7 +88,6 @@ class NotificationSettings extends StatefulWidget {
 }
 
 class _NotificationSettingsState extends State<NotificationSettings> {
-  // ignore: unused_field
   bool _showNotifications = false;
   @override
   void initState() {
@@ -113,26 +111,25 @@ class _NotificationSettingsState extends State<NotificationSettings> {
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:531234684.
   @override
   Widget build(BuildContext context) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          const Text(
-            'Notifications:',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              backgroundColor: Color.fromARGB(0, 0, 0, 0),
-            ),
-          ),
-          Switch(
-            value: _showNotifications,
-            onChanged: (value) {
-              setState(() {
-                _showNotifications = value;
-                _saveSettings(value);
-              });
-            },
-          ),
-        ]);
+    return Row(children: <Widget>[
+      const Text(
+        'Notifications:',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          backgroundColor: Color.fromARGB(0, 0, 0, 0),
+        ),
+      ),
+      const Spacer(),
+      Switch(
+        value: _showNotifications,
+        onChanged: (value) {
+          setState(() {
+            _showNotifications = value;
+            _saveSettings(value);
+          });
+        },
+      ),
+    ]);
   }
 }
