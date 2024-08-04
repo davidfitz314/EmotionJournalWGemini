@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/db/database_service.dart';
 import 'package:myapp/widgets/background_gradient.dart';
+import 'package:myapp/widgets/gemini_chat.dart';
 import 'package:myapp/widgets/journal_entry_details.dart';
 
 class JournalEntries extends StatefulWidget {
@@ -96,8 +97,15 @@ class _JournalEntriesState extends State<JournalEntries> {
                     )),
         ]),
       ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const GeminiChat(),
+            ),
+          ),
+        },
         tooltip: 'Chat',
         backgroundColor: Color(0xFF87CEFA),
         child: Icon(Icons.message),

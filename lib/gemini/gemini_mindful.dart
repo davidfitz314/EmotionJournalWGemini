@@ -6,6 +6,10 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 final mindfulResultNotifier =
     StateProvider<MindfulResultPayload?>((ref) => null);
 
+final mindfulServiceProvider = Provider<GeminiMindfulService>((ref) {
+  return GeminiMindfulService(ref);
+});
+
 class GeminiMindfulService {
   final Ref ref;
   const GeminiMindfulService(this.ref);
@@ -14,7 +18,7 @@ class GeminiMindfulService {
     try {
       var model = GenerativeModel(
           model: 'gemini-1.5-pro',
-          apiKey: 'YOUR_API_KEY_HERE', // <- ADD YOUR API KEY HERE
+          apiKey: 'PLACE_API_KEY_HERE', // <- ADD YOUR API KEY HERE
           generationConfig: GenerationConfig(
               responseMimeType: 'application/json',
               responseSchema: Schema.object(properties: {
@@ -32,7 +36,7 @@ class GeminiMindfulService {
       var response = await model.generateContent([content]);
       var jsonPayload = json.decode(response.text!);
       ref.read(mindfulResultNotifier.notifier).state = MindfulResultPayload(
-        name: jsonPayload['mindfulReply'],
+        content: jsonPayload['mindfulReply'],
       );
     } on Exception {
       rethrow;
@@ -45,9 +49,9 @@ class GeminiMindfulService {
 }
 
 class MindfulResultPayload {
-  final String name;
+  final String content;
 
   const MindfulResultPayload({
-    required this.name,
+    required this.content,
   });
 }
