@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/db/database_service.dart';
 import 'package:myapp/widgets/background_gradient.dart';
+import 'package:myapp/widgets/journal_entry_details.dart';
 
 class JournalEntries extends StatefulWidget {
   const JournalEntries({super.key});
@@ -52,7 +53,15 @@ class _JournalEntriesState extends State<JournalEntries> {
                           itemBuilder: (context, index) {
                             final entry = _entries[index];
                             return GestureDetector(
-                              onTap: () => {},
+                              onTap: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        JournalEntryDetails(entry: entry),
+                                  ),
+                                ),
+                              },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
                                 child: Card(
