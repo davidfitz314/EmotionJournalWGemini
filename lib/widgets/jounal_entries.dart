@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/db/database_service.dart';
 import 'package:myapp/widgets/background_gradient.dart';
-import 'package:intl/intl.dart';
 
 class JournalEntries extends StatefulWidget {
   const JournalEntries({super.key});
