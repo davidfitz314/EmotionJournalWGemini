@@ -3,22 +3,21 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-final mindfulResultNotifier =
-    StateProvider<MindfulResultPayload?>((ref) => null);
+final chatResultNotifier = StateProvider<ChatResultPayload?>((ref) => null);
 
-final mindfulServiceProvider = Provider<GeminiMindfulService>((ref) {
-  return GeminiMindfulService(ref);
+final chatServiceProvider = Provider<GeminiChatService>((ref) {
+  return GeminiChatService(ref);
 });
 
-class GeminiMindfulService {
+class GeminiChatService {
   final Ref ref;
-  const GeminiMindfulService(this.ref);
+  const GeminiChatService(this.ref);
 
-  Future<void> getMindfullness() async {
+  Future<void> getChatReply() async {
     try {
       var model = GenerativeModel(
           model: 'gemini-1.5-pro',
-          apiKey: 'INSERT_API_KEY_HERE', // <- ADD YOUR API KEY HERE
+          apiKey: '', // <- ADD YOUR API KEY HERE
           generationConfig: GenerationConfig(
               responseMimeType: 'application/json',
               responseSchema: Schema.object(properties: {
@@ -35,7 +34,7 @@ class GeminiMindfulService {
 
       var response = await model.generateContent([content]);
       var jsonPayload = json.decode(response.text!);
-      ref.read(mindfulResultNotifier.notifier).state = MindfulResultPayload(
+      ref.read(chatResultNotifier.notifier).state = ChatResultPayload(
         content: jsonPayload['mindfulReply'],
       );
     } on Exception {
@@ -44,14 +43,14 @@ class GeminiMindfulService {
   }
 
   void clear() {
-    ref.read(mindfulResultNotifier.notifier).state = null;
+    ref.read(chatResultNotifier.notifier).state = null;
   }
 }
 
-class MindfulResultPayload {
+class ChatResultPayload {
   final String content;
 
-  const MindfulResultPayload({
+  const ChatResultPayload({
     required this.content,
   });
 }

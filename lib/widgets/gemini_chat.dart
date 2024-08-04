@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:myapp/gemini/gemini_mindful.dart';
+import 'package:myapp/gemini/gemini_chat.dart';
+import 'package:myapp/widgets/background_gradient.dart';
 
 class GeminiChat extends StatefulWidget {
   const GeminiChat({super.key});
@@ -14,22 +15,31 @@ class _GeminiChatState extends State<GeminiChat> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
           elevation: 0,
           centerTitle: true,
+          backgroundColor: Color(0xFFE0F7FA),
+          foregroundColor: Color(0xFF2F4F4F),
           title: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.collections, color: Colors.purple),
+              Icon(Icons.chat, color: Color(0xFF2F4F4F)),
               SizedBox(width: 16),
-              Text('Chat', style: TextStyle(color: Colors.purple))
+              Text('Chat', style: TextStyle(color: Color(0xFF2F4F4F)))
             ],
           ),
         ),
-        body: const Center(
-            child: Column(
-          children: [Text("Hello"), MindfulRequestControls(), ChatResponse()],
-        )));
+        body: const Stack(children: [
+          GradientBg(),
+          Center(
+              child: Column(
+            children: [
+              Spacer(),
+              ChatResponse(),
+              Spacer(),
+              MindfulRequestControls(),
+            ],
+          ))
+        ]));
   }
 }
 
@@ -45,15 +55,15 @@ class MindfulRequestControls extends ConsumerWidget {
         children: [
           ElevatedButton.icon(
               onPressed: () async {
-                await ref.read(mindfulServiceProvider).getMindfullness();
+                await ref.read(chatServiceProvider).getChatReply();
               },
-              icon: const Icon(Icons.image),
+              icon: const Icon(Icons.send),
               label: const Text('Send')),
           const SizedBox(width: 24),
           ElevatedButton.icon(
               icon: const Icon(Icons.clear),
               onPressed: () async {
-                ref.read(mindfulServiceProvider).clear();
+                ref.read(chatServiceProvider).clear();
               },
               label: const Text('Clear'))
         ],
@@ -67,7 +77,7 @@ class ChatResponse extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final resultPayload = ref.watch(mindfulResultNotifier);
+    final resultPayload = ref.watch(chatResultNotifier);
 
     if (resultPayload == null) {
       return const SizedBox.shrink();
@@ -90,7 +100,7 @@ class ChatResponse extends ConsumerWidget {
               children: [
                 const Text(
                   'Response',
-                  style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
+                  style: TextStyle(fontSize: 20, color: Color(0xFF2F4F4F)),
                 ),
                 Text(
                   resultPayload.content,

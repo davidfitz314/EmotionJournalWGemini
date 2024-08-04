@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/db/database_service.dart';
+import 'package:myapp/widgets/gemini_chat.dart';
 
 class EmotionSelector extends StatefulWidget {
   const EmotionSelector({super.key});
@@ -149,6 +150,12 @@ class _EmotionSelectorState extends State<EmotionSelector> {
                 icon: const Icon(Icons.chat),
                 onPressed: () {
                   // Chat action
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const GeminiChat(),
+                    ),
+                  );
                 },
               ),
             ],
