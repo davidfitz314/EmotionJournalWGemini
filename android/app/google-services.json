@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "783200719123",
+    "project_id": "mindful-notes-journal",
+    "storage_bucket": "mindful-notes-journal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783200719123:android:e6a0608673039d3eec0ae6",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiAqHh5pEmSm5Q7CwyboQaQcxrOpLRv24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

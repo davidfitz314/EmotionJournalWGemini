@@ -8,7 +8,11 @@ const List<String> list = <String>[
   'Chinese Medicine',
   'Qi Gong',
   'Reiki',
-  'Chakras'
+  'Chakras',
+  'Self-Hypnosis',
+  'Affirmations',
+  'Breathwork',
+  'Meditation'
 ];
 
 class MeditationSelector extends StatefulWidget {

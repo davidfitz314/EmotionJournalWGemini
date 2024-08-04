@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/db/journal_db.dart';
-import 'package:myapp/db/journal_model.dart';
+import 'package:myapp/db/database_service.dart';
 
 class EmotionSelector extends StatefulWidget {
   const EmotionSelector({super.key});
@@ -10,7 +9,8 @@ class EmotionSelector extends StatefulWidget {
 }
 
 class _EmotionSelectorState extends State<EmotionSelector> {
-  JournalDb journalDb = JournalDb.instance;
+  // JournalDb journalDb = JournalDb.instance;
+  final DatabaseEntryService _databaseService = DatabaseEntryService();
 
   List<String> emotions = [
     'Joy', 'Love', 'Surprise', // Positive emotions
@@ -44,19 +44,19 @@ class _EmotionSelectorState extends State<EmotionSelector> {
     _controller.text = "";
   }
 
-  createJournalEntry() {
+  createJournalEntry() async {
     String temppTitle = "";
     selectedEmotions.forEach((key, value) {
       if (value) {
         temppTitle += '$key ';
       }
-      ;
     });
     DateTime createdDate = DateTime.now();
-    final model = JournalModel(
-        title: temppTitle, createdDate: createdDate, content: _controller.text);
-    journalDb.create(model);
-    // print(model.toJson());
+    await _databaseService.addEntry({
+      'title': temppTitle,
+      'createdDate': createdDate,
+      'content': _controller.text,
+    });
   }
 
   @override
@@ -130,6 +130,7 @@ class _EmotionSelectorState extends State<EmotionSelector> {
                   icon: const Icon(Icons.save),
                   onPressed: () {
                     // Save action
+                    // TODO: create a pop up for assking if they want to practice a mindful exercise
                     createJournalEntry();
                   },
                 ),

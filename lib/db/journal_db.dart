@@ -5,6 +5,7 @@ import 'package:myapp/db/journal_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+// TODO: convert this over to firebase for persistant storage accross devices
 class JournalDb {
   static final JournalDb instance = JournalDb._internal();
 

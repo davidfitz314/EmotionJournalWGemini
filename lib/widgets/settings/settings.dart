@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/widgets/background_gradient.dart';
-import 'package:myapp/widgets/general_settings.dart';
-import 'package:myapp/widgets/meditation_selector.dart';
-import 'package:myapp/widgets/sub_title.dart';
+import 'package:myapp/widgets/settings/general_settings.dart';
+import 'package:myapp/widgets/settings/meditation_selector.dart';
+import 'package:myapp/widgets/settings/playback_settings.dart';
+import 'package:myapp/widgets/settings/sub_title.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -19,19 +20,21 @@ class SettingsPage extends StatelessWidget {
 }
 
 class SettingsList extends StatelessWidget {
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:2758149102.
   const SettingsList({super.key});
 
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:3258788030.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color.fromARGB(0, 0, 0, 0),
         body: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(20.0),
             child: ListView(children: const <Widget>[
               SubtitleWithLine(title: "Mindful ML Advisor"),
               MeditationSelector(),
+              Padding(
+                padding: EdgeInsets.only(bottom: 30),
+                child: PlaybackSettings(),
+              ),
               SubtitleWithLine(title: "General Settings"),
               GeneralSettings(),
               NotificationSettings(),

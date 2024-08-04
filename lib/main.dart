@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/widgets/home.dart';
 import 'package:myapp/widgets/jounal_entries.dart';
-import 'package:myapp/widgets/settings.dart';
+import 'package:myapp/widgets/mindfulness_entries.dart';
+import 'package:myapp/widgets/settings/settings.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -15,13 +20,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: DefaultTabController(
-          length: 3,
+          length: 4,
           child: Scaffold(
             appBar: AppBar(
               bottom: const TabBar(
                 tabs: [
                   Tab(icon: Icon(Icons.home)),
                   Tab(icon: Icon(Icons.menu_book)),
+                  Tab(icon: Icon(Icons.self_improvement)),
                   Tab(icon: Icon(Icons.settings)),
                 ],
               ),
@@ -39,6 +45,7 @@ class MyApp extends StatelessWidget {
               children: [
                 Home(),
                 JournalEntries(),
+                MindfulnessEntries(),
                 SettingsPage(),
               ],
             ),

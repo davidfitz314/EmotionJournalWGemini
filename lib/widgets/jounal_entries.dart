@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/db/journal_db.dart';
-import 'package:myapp/db/journal_model.dart';
+import 'package:myapp/db/database_service.dart';
 import 'package:myapp/widgets/background_gradient.dart';
+import 'package:intl/intl.dart';
 
 class JournalEntries extends StatefulWidget {
   const JournalEntries({super.key});
@@ -10,30 +10,28 @@ class JournalEntries extends StatefulWidget {
 }
 
 class _JournalEntriesState extends State<JournalEntries> {
-  JournalDb journalDb = JournalDb.instance;
-
-  List<JournalModel> entries = [];
+  final DatabaseEntryService _databaseService = DatabaseEntryService();
+  List<Map<String, dynamic>> _entries = [];
+  // List<JournalModel> entries = [];
 
   @override
   void initState() {
-    refreshJournalEntries();
     super.initState();
+    _fetchEntries();
+  }
+
+  Future<void> _fetchEntries() async {
+    List<Map<String, dynamic>> entries = await _databaseService.getEntries();
+    setState(() {
+      _entries = entries;
+    });
   }
 
   @override
   dispose() {
     //close the database
-    journalDb.close();
+    // journalDb.close();
     super.dispose();
-  }
-
-  ///Gets all the entries from the database and updates the state
-  refreshJournalEntries() {
-    journalDb.readAll().then((value) {
-      setState(() {
-        entries = value;
-      });
-    });
   }
 
   @override
@@ -43,47 +41,57 @@ class _JournalEntriesState extends State<JournalEntries> {
         child: Stack(children: [
           const GradientBg(),
           Center(
-            child: entries.isEmpty
-                ? const Text(
-                    'Hello My Journal!',
-                    style: TextStyle(color: Colors.white),
-                  )
-                : ListView.builder(
-                    itemCount: entries.length,
-                    itemBuilder: (context, index) {
-                      final entry = entries[index];
-                      return GestureDetector(
-                        onTap: () => {},
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    entry.createdDate.toString().split(' ')[0],
+              child: _entries.isEmpty
+                  ? const Text(
+                      'Hello My Journal!',
+                      style: TextStyle(color: Color(0xFF2F4F4F)),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                          itemCount: _entries.length,
+                          itemBuilder: (context, index) {
+                            final entry = _entries[index];
+                            return GestureDetector(
+                              onTap: () => {},
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          entry['title'],
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall,
+                                        ),
+                                        Text(
+                                          entry['createdDate'].toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        ),
+                                        Text(
+                                          "${entry['content'].toString().substring(0, 130)}...",
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Text(
-                                    entry.title,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium,
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-          ),
+                            );
+                          }),
+                    )),
         ]),
       ),
       floatingActionButton: const FloatingActionButton(
         onPressed: null,
         tooltip: 'Chat',
+        backgroundColor: Color(0xFF87CEFA),
         child: Icon(Icons.message),
       ),
     );
