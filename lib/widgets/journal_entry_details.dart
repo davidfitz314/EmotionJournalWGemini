@@ -4,7 +4,7 @@ import 'package:myapp/widgets/background_gradient.dart';
 class JournalEntryDetails extends StatelessWidget {
   final Map<String, dynamic> entry;
 
-  JournalEntryDetails({required this.entry});
+  const JournalEntryDetails({required this.entry});
 
   @override
   Widget build(BuildContext context) {

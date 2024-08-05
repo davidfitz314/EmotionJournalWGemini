@@ -33,12 +33,12 @@ class GeminiChatService {
     StringBuffer buffer = StringBuffer();
     int numberOfMessagesToInclude = 10;
 
-// Determine the starting index based on the size of the list
+    // Determine the starting index based on the size of the list
     int startIndex = oldMessages.length > numberOfMessagesToInclude
         ? oldMessages.length - numberOfMessagesToInclude
         : 0;
 
-// Iterate over the last `numberOfMessagesToInclude` messages
+    // Iterate over the last `numberOfMessagesToInclude` messages
     for (var i = startIndex; i < oldMessages.length; i++) {
       var message = oldMessages[i];
       if (message.content.contains(userMessage)) continue;
@@ -48,7 +48,7 @@ class GeminiChatService {
           "{ isUser: ${message.isUserMessage}, content: ${message.content} }");
     }
 
-// Convert the buffer to a string
+    // Convert the buffer to a string
     String pastMessages = buffer.toString();
     try {
       var model = GenerativeModel(
@@ -211,12 +211,24 @@ class MindfulRequestControls extends StatelessWidget {
 
 class ChatMessages extends StatelessWidget {
   final List<ChatMessage> messages;
+  final ScrollController _scrollController = ScrollController();
 
-  const ChatMessages({super.key, required this.messages});
+  ChatMessages({super.key, required this.messages});
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+
     return ListView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.all(8.0),
       itemCount: messages.length,
       itemBuilder: (context, index) {
