@@ -69,98 +69,90 @@ class _EmotionSelectorState extends State<EmotionSelector> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+      appBar: AppBar(
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-          title: const Text('How are you feeling today?',
-              style: TextStyle(
-                fontSize: 24,
-                color: Color(0xFF2F4F4F),
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.bold,
-              )),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                buildCategoryRow(['Joy', 'Love', 'Surprise'],
-                    Colors.green), // Positive emotions
-                const SizedBox(height: 16),
-                buildCategoryRow(
-                    ['Neutral', 'Trust'], Colors.blue), // Neutral emotions
-                const SizedBox(height: 16),
-                buildCategoryRow(['Sadness', 'Fear', 'Anger'], Colors.red),
-                Visibility(
-                    visible: isAnySelected,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 30),
-                      child: TextField(
-                        controller: _controller,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Lets Journal it!',
-                          hintText: 'Type something...',
-                        ),
-                        maxLines: null, // Allows unlimited lines
-                        minLines: 7,
-                        keyboardType: TextInputType.multiline,
-                        onChanged: (text) {
-                          // Handle text changes if needed
-                          print('Current text: $text');
+        title: const Text('How are you feeling today?',
+            style: TextStyle(
+              fontSize: 24,
+              color: Color(0xFF2F4F4F),
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.bold,
+            )),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            buildCategoryRow(
+                ['Joy', 'Love', 'Surprise'], Colors.green), // Positive emotions
+            const SizedBox(height: 16),
+            buildCategoryRow(
+                ['Neutral', 'Trust'], Colors.blue), // Neutral emotions
+            const SizedBox(height: 16),
+            buildCategoryRow(['Sadness', 'Fear', 'Anger'], Colors.red),
+            Visibility(
+                visible: isAnySelected,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Lets Journal it!',
+                      hintText: 'What you feel matters the most...',
+                      fillColor: Color.fromARGB(255, 235, 248, 255),
+                      filled: true,
+                    ),
+                    maxLines: null, // Allows unlimited lines
+                    minLines: 7,
+                    keyboardType: TextInputType.multiline,
+                    onChanged: (text) {
+                      // Handle text changes if needed
+                      // print('Current text: $text');
+                    },
+                  ), // Negative emotions,
+                )),
+            Visibility(
+                visible: isAnySelected,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 24),
+                    ElevatedButton.icon(
+                        onPressed: () async {
+                          createJournalEntry();
                         },
-                      ), // Negative emotions,
-                    ))
-              ],
+                        icon: const Icon(Icons.save_rounded),
+                        label: const Text('Save')),
+                    const SizedBox(width: 24),
+                    ElevatedButton.icon(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () async {
+                          handleReset();
+                        },
+                        label: const Text('Clear'))
+                  ],
+                ))
+          ]),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const GeminiChat(),
             ),
           ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          shape: const CircularNotchedRectangle(),
-          color: Color(0xFF87CEFA),
-          notchMargin: 6.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Visibility(
-                visible: isAnySelected,
-                child: IconButton(
-                  icon: const Icon(Icons.save),
-                  onPressed: () {
-                    // Save action
-                    // TODO: create a pop up for assking if they want to practice a mindful exercise
-                    createJournalEntry();
-                  },
-                ),
-              ),
-              Visibility(
-                visible: isAnySelected,
-                child: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    handleReset();
-                    // Another action
-                  },
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.chat),
-                onPressed: () {
-                  // Chat action
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const GeminiChat(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ));
+        },
+        tooltip: 'Chat',
+        backgroundColor: Color(0xFFE0F7FA),
+        child: Icon(Icons.message),
+      ),
+    );
   }
 
   Widget buildCategoryRow(List<String> categoryEmotions, Color categoryColor) {
@@ -204,7 +196,7 @@ class ToggleButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? color.withOpacity(0.8)
-              : Colors.grey.withOpacity(0.2),
+              : Color.fromARGB(255, 75, 183, 251).withOpacity(0.2),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
