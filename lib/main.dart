@@ -40,8 +40,8 @@ class MyApp extends StatelessWidget {
                       // fontStyle: FontStyle.italic,
                       fontFamily: 'Nunito',
                       fontFamilyFallback: ['OpenSans', 'Roboto'])),
-              backgroundColor: Color(0xFFE0F7FA),
-              foregroundColor: Color(0xFF2F4F4F),
+              backgroundColor: const Color(0xFFE0F7FA),
+              foregroundColor: const Color(0xFF2F4F4F),
             ),
             body: const TabBarView(
               children: [
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF87CEFA)),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF87CEFA)),
           useMaterial3: true,
         ));
   }

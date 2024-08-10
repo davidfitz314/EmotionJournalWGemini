@@ -33,7 +33,7 @@ class _PlaybackSettingsSpeedState extends State<PlaybackSettingsSpeed> {
   @override
   Widget build(BuildContext context) {
     return Row(children: <Widget>[
-      Text(
+      const Text(
         'Playback Speed',
         style: TextStyle(
           fontSize: 16,
@@ -41,7 +41,7 @@ class _PlaybackSettingsSpeedState extends State<PlaybackSettingsSpeed> {
           backgroundColor: Color.fromARGB(0, 0, 0, 0),
         ),
       ),
-      Spacer(),
+      const Spacer(),
       Text("Placeholder: $_playbackSpeed")
       // Switch(
       //   value: _playbackSpeed.toString(),
@@ -87,7 +87,7 @@ class _PlaybackSettingsVoiceState extends State<PlaybackSettingsVoice> {
   @override
   Widget build(BuildContext context) {
     return Row(children: <Widget>[
-      Text(
+      const Text(
         'Playback Voice',
         style: TextStyle(
           fontSize: 16,
@@ -95,7 +95,7 @@ class _PlaybackSettingsVoiceState extends State<PlaybackSettingsVoice> {
           backgroundColor: Color.fromARGB(0, 0, 0, 0),
         ),
       ),
-      Spacer(),
+      const Spacer(),
       Text("Placeholder: $_playbackVoice")
       // Switch(
       //   value: _playbackSpeed.toString(),

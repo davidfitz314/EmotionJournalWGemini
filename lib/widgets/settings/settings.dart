@@ -25,7 +25,7 @@ class SettingsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromARGB(0, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
         body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: ListView(children: const <Widget>[

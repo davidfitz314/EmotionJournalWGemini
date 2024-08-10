@@ -57,7 +57,7 @@ class _MeditationSelectorState extends State<MeditationSelector> {
               backgroundColor: Color.fromARGB(0, 0, 0, 0),
             ),
           ),
-          Spacer(),
+          const Spacer(),
           DropdownButton<String>(
             value: _meditationStyleSelection,
             icon: const Icon(Icons.arrow_downward),

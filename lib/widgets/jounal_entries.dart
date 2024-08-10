@@ -107,8 +107,8 @@ class _JournalEntriesState extends State<JournalEntries> {
           ),
         },
         tooltip: 'Chat',
-        backgroundColor: Color(0xFF87CEFA),
-        child: Icon(Icons.message),
+        backgroundColor: const Color(0xFF87CEFA),
+        child: const Icon(Icons.message),
       ),
     );
   }

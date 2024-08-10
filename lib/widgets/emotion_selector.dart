@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/db/database_service.dart';
-import 'package:myapp/widgets/gemini_chat.dart';
+import 'package:myapp/widgets/text_to_speech.dart';
 
 class EmotionSelector extends StatefulWidget {
   const EmotionSelector({super.key});
 
   @override
-  _EmotionSelectorState createState() => _EmotionSelectorState();
+  State<EmotionSelector> createState() => _EmotionSelectorState();
 }
 
 class _EmotionSelectorState extends State<EmotionSelector> {
@@ -144,13 +144,13 @@ class _EmotionSelectorState extends State<EmotionSelector> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const GeminiChat(),
+              builder: (context) => const MeditationGuidePage(),
             ),
           ),
         },
         tooltip: 'Chat',
-        backgroundColor: Color(0xFFE0F7FA),
-        child: Icon(Icons.message),
+        backgroundColor: const Color(0xFFE0F7FA),
+        child: const Icon(Icons.message),
       ),
     );
   }
@@ -181,6 +181,7 @@ class ToggleButton extends StatelessWidget {
   final Color color;
 
   const ToggleButton({
+    super.key,
     required this.text,
     required this.isSelected,
     required this.onPressed,
@@ -196,7 +197,7 @@ class ToggleButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? color.withOpacity(0.8)
-              : Color.fromARGB(255, 75, 183, 251).withOpacity(0.2),
+              : const Color.fromARGB(255, 75, 183, 251).withOpacity(0.2),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(

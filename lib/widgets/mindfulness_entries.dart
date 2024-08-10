@@ -18,7 +18,7 @@ class _MindfulnessEntriesState extends State<MindfulnessEntries> {
         child: Text("Saved Mindful Entries..."),
       ),
     ]),
-    floatingActionButton: const FloatingActionButton(
+    floatingActionButton: FloatingActionButton(
         onPressed: null,
         tooltip: 'Chat',
         backgroundColor: Color(0xFF87CEFA),
