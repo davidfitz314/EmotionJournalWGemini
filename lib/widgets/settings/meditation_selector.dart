@@ -12,7 +12,8 @@ const List<String> list = <String>[
   'Self-Hypnosis',
   'Affirmations',
   'Breathwork',
-  'Meditation'
+  'Meditation',
+  'Cognitive Behavioral Therapy'
 ];
 
 class MeditationSelector extends StatefulWidget {

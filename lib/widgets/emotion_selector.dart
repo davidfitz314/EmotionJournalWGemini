@@ -88,13 +88,31 @@ class _EmotionSelectorState extends State<EmotionSelector> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MeditationApp(
+                        meditationStyle: _mindfulPractice,
+                        emotions: selectedEmotions.entries
+                            .where((entry) => entry.value)
+                            .map((entry) => entry.key)
+                            .toList(),
+                        journalContent: _controller.text),
+                  ),
+                );
               },
               child: Text('Yes'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyApp(
+                        selectedIndex:
+                            1), // Update this if you have a specific JournalEntries widget
+                  ),
+                );
               },
               child: Text('No'),
             ),
@@ -102,30 +120,6 @@ class _EmotionSelectorState extends State<EmotionSelector> {
         );
       },
     );
-
-    if (result == true) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MeditationApp(
-              meditationStyle: _mindfulPractice,
-              emotions: selectedEmotions.entries
-                  .where((entry) => entry.value)
-                  .map((entry) => entry.key)
-                  .toList(),
-              journalContent: _controller.text),
-        ),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MyApp(
-              selectedIndex:
-                  1), // Update this if you have a specific JournalEntries widget
-        ),
-      );
-    }
   }
 
   @override
