@@ -5,7 +5,8 @@ class DatabaseEntryService {
       FirebaseFirestore.instance.collection('journal_entries');
 
   Future<void> addEntry(Map<String, dynamic> entryData) async {
-    await collection.add(entryData);
+    DocumentReference docRef = await collection.add(entryData);
+    await docRef.update({'id': docRef.id});
   }
 
   Future<List<Map<String, dynamic>>> getEntries() async {
@@ -13,6 +14,9 @@ class DatabaseEntryService {
         await collection.orderBy('createdDate', descending: true).get();
     return querySnapshot.docs.map((doc) {
       final data = doc.data() as Map<String, dynamic>;
+
+      // Include the document ID
+      data['id'] = doc.id;
 
       // Convert 'createdDate' from Timestamp to DateTime if necessary
       if (data['createdDate'] is Timestamp) {
@@ -37,7 +41,9 @@ class DatabaseMeditationService {
       FirebaseFirestore.instance.collection('favorite_meditations');
 
   Future<void> addEntry(Map<String, dynamic> entryData) async {
-    await collection.add(entryData);
+    DocumentReference docRef = await collection.add(entryData);
+    // Store the ID with the entry data
+    await docRef.update({'id': docRef.id});
   }
 
   Future<List<Map<String, dynamic>>> getEntries() async {
@@ -45,6 +51,9 @@ class DatabaseMeditationService {
         await collection.orderBy('createdDate', descending: true).get();
     return querySnapshot.docs.map((doc) {
       final data = doc.data() as Map<String, dynamic>;
+
+      // Include the document ID
+      data['id'] = doc.id;
 
       // Convert 'createdDate' from Timestamp to DateTime if necessary
       if (data['createdDate'] is Timestamp) {

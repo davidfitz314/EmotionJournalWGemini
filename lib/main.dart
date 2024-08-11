@@ -10,52 +10,73 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // runApp(const MyApp());
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(
+      child: MyApp(
+    selectedIndex: 0,
+  )));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  final int selectedIndex;
 
-  // This widget is the root of your application.
+  const MyApp({super.key, this.selectedIndex = 0});
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.selectedIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: DefaultTabController(
-          length: 4,
-          child: Scaffold(
-            appBar: AppBar(
-              bottom: const TabBar(
-                tabs: [
-                  Tab(icon: Icon(Icons.home)),
-                  Tab(icon: Icon(Icons.menu_book)),
-                  Tab(icon: Icon(Icons.self_improvement)),
-                  Tab(icon: Icon(Icons.settings)),
-                ],
-              ),
-              title: const Text('Mindful Moods',
-                  style: TextStyle(
-                      color: Color(0xFF2F4F4F),
-                      fontSize: 24,
-                      // fontStyle: FontStyle.italic,
-                      fontFamily: 'Nunito',
-                      fontFamilyFallback: ['OpenSans', 'Roboto'])),
-              backgroundColor: const Color(0xFFE0F7FA),
-              foregroundColor: const Color(0xFF2F4F4F),
-            ),
-            body: const TabBarView(
-              children: [
-                Home(),
-                JournalEntries(),
-                FavoriteMeditationsPage(),
-                SettingsPage(),
+      debugShowCheckedModeBanner: false,
+      home: DefaultTabController(
+        length: 4,
+        initialIndex: _currentIndex,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: const TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.home)),
+                Tab(icon: Icon(Icons.menu_book)),
+                Tab(icon: Icon(Icons.self_improvement)),
+                Tab(icon: Icon(Icons.settings)),
               ],
             ),
+            title: const Text(
+              'Mindful Moods',
+              style: TextStyle(
+                color: Color(0xFF2F4F4F),
+                fontSize: 24,
+                fontFamily: 'Nunito',
+                fontFamilyFallback: ['OpenSans', 'Roboto'],
+              ),
+            ),
+            backgroundColor: const Color(0xFFE0F7FA),
+            foregroundColor: const Color(0xFF2F4F4F),
+          ),
+          body: const TabBarView(
+            children: [
+              Home(),
+              JournalEntries(),
+              FavoriteMeditationsPage(),
+              SettingsPage(),
+            ],
           ),
         ),
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF87CEFA)),
-          useMaterial3: true,
-        ));
+      ),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF87CEFA)),
+        useMaterial3: true,
+      ),
+    );
   }
 }

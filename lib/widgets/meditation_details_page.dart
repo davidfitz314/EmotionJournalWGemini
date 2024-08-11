@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:myapp/widgets/background_gradient.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MeditationDetailsPage extends StatefulWidget {
   final String title;
@@ -19,32 +20,46 @@ class MeditationDetailsPage extends StatefulWidget {
 class _MeditationDetailsPageState extends State<MeditationDetailsPage> {
   final FlutterTts _flutterTts = FlutterTts();
   int _currentIndex = 0;
-  double _speechRate = 0.5;
-  double _pitch = 1.0;
+  double _speechRate = 0.8; // Local speech rate, not from SharedPreferences
+  double _pitch = 1.0; // Default pitch
 
   @override
   void initState() {
     super.initState();
-    _flutterTts.setSpeechRate(_speechRate);
-    _flutterTts.setPitch(_pitch);
+    _loadSettings();
+    _flutterTts.setLanguage('en-GB');
     _flutterTts.setCompletionHandler(_onComplete);
   }
 
+  Future<void> _loadSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _pitch = prefs.getDouble('playbackPitch') ?? 1.0;
+      // Note: Pause duration is not used directly in FlutterTts but can be used for custom delays.
+    });
+  }
+
   void _speak() async {
+    await _flutterTts.setSpeechRate(_speechRate);
+    await _flutterTts.setPitch(_pitch);
     if (widget.meditationSteps.isNotEmpty &&
         _currentIndex < widget.meditationSteps.length) {
       String textToSpeak = widget.meditationSteps[_currentIndex];
-      String ssmlText = '''
-      <speak>
-        ${textToSpeak}
-        <break time="2000ms"/>
-      </speak>
-    ''';
-      await _flutterTts.speak(ssmlText);
+      await _flutterTts.speak(textToSpeak);
     }
   }
 
-  void _onComplete() {
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
+  }
+
+  void _onComplete() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int pauseDuration = prefs.getInt('linePause') ?? 1;
+    await Future.delayed(Duration(
+        seconds: pauseDuration)); // Use pause duration from SharedPreferences
     setState(() {
       if (_currentIndex < widget.meditationSteps.length - 1) {
         _currentIndex++;
@@ -60,15 +75,17 @@ class _MeditationDetailsPageState extends State<MeditationDetailsPage> {
   void _increaseSpeechRate() {
     setState(() {
       _speechRate = (_speechRate + 0.1).clamp(0.1, 1.0);
-      _flutterTts.setSpeechRate(_speechRate);
+      _speechRate = double.parse(_speechRate.toStringAsFixed(1));
     });
+    _speak();
   }
 
   void _decreaseSpeechRate() {
     setState(() {
       _speechRate = (_speechRate - 0.1).clamp(0.1, 1.0);
-      _flutterTts.setSpeechRate(_speechRate);
+      _speechRate = double.parse(_speechRate.toStringAsFixed(1));
     });
+    _speak();
   }
 
   @override
@@ -126,26 +143,38 @@ class _MeditationDetailsPageState extends State<MeditationDetailsPage> {
                         _currentIndex = 0; // Start from the beginning
                         _speak();
                       },
-                      child: const Text('Play'),
+                      child: const Icon(Icons.play_arrow), // Play icon
                     ),
                     const SizedBox(width: 10.0),
                     ElevatedButton(
                       onPressed: _stop,
-                      child: const Text('Stop'),
+                      child: const Icon(Icons.stop), // Stop icon
                     ),
                     const SizedBox(width: 10.0),
                     ElevatedButton(
                       onPressed: _decreaseSpeechRate,
-                      child: const Text('Slow Down'),
+                      child: const Icon(Icons.remove), // Slow Down icon
                     ),
                     const SizedBox(width: 10.0),
                     ElevatedButton(
                       onPressed: _increaseSpeechRate,
-                      child: const Text('Speed Up'),
+                      child: const Icon(Icons.add), // Speed Up icon
                     ),
                   ],
                 ),
-                Text('Current Speech Rate: $_speechRate'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Speech Rate: ${_speechRate.toStringAsFixed(1)}x'),
+                    IconButton(
+                      icon: Icon(Icons.info_outline),
+                      tooltip: 'Adjusts the speed at which the text is spoken.',
+                      onPressed: () {
+                        // Optionally show a dialog or tooltip with more info
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

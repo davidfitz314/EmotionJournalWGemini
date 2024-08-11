@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/db/database_service.dart';
+import 'package:myapp/main.dart';
+import 'package:myapp/widgets/gemini_chat.dart';
 import 'package:myapp/widgets/text_to_speech.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EmotionSelector extends StatefulWidget {
   const EmotionSelector({super.key});
@@ -10,7 +13,6 @@ class EmotionSelector extends StatefulWidget {
 }
 
 class _EmotionSelectorState extends State<EmotionSelector> {
-  // JournalDb journalDb = JournalDb.instance;
   final DatabaseEntryService _databaseService = DatabaseEntryService();
 
   List<String> emotions = [
@@ -35,6 +37,21 @@ class _EmotionSelectorState extends State<EmotionSelector> {
   }
 
   final TextEditingController _controller = TextEditingController();
+  String _mindfulPractice = "mindfulness"; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMindfulPractice();
+  }
+
+  void _loadMindfulPractice() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _mindfulPractice =
+          prefs.getString('meditationStyleSelection') ?? "mindfulness";
+    });
+  }
 
   void handleReset() {
     setState(() {
@@ -45,7 +62,7 @@ class _EmotionSelectorState extends State<EmotionSelector> {
     _controller.text = "";
   }
 
-  createJournalEntry() async {
+  Future<void> createJournalEntry() async {
     String temppTitle = "";
     selectedEmotions.forEach((key, value) {
       if (value) {
@@ -58,6 +75,57 @@ class _EmotionSelectorState extends State<EmotionSelector> {
       'createdDate': createdDate,
       'content': _controller.text,
     });
+    _showConfirmationDialog(); // Call the dialog after saving the entry
+  }
+
+  void _showConfirmationDialog() async {
+    bool? result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+              'Would you like to do a $_mindfulPractice practice based on your Journal Entry?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MeditationApp(
+              meditationStyle: _mindfulPractice,
+              emotions: selectedEmotions.entries
+                  .where((entry) => entry.value)
+                  .map((entry) => entry.key)
+                  .toList(),
+              journalContent: _controller.text),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyApp(
+              selectedIndex:
+                  1), // Update this if you have a specific JournalEntries widget
+        ),
+      );
+    }
   }
 
   @override
@@ -109,11 +177,7 @@ class _EmotionSelectorState extends State<EmotionSelector> {
                     maxLines: null, // Allows unlimited lines
                     minLines: 7,
                     keyboardType: TextInputType.multiline,
-                    onChanged: (text) {
-                      // Handle text changes if needed
-                      // print('Current text: $text');
-                    },
-                  ), // Negative emotions,
+                  ),
                 )),
             Visibility(
                 visible: isAnySelected,
@@ -123,7 +187,8 @@ class _EmotionSelectorState extends State<EmotionSelector> {
                     const SizedBox(width: 24),
                     ElevatedButton.icon(
                         onPressed: () async {
-                          createJournalEntry();
+                          await createJournalEntry();
+                          _showConfirmationDialog();
                         },
                         icon: const Icon(Icons.save_rounded),
                         label: const Text('Save')),
@@ -144,7 +209,7 @@ class _EmotionSelectorState extends State<EmotionSelector> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MeditationApp(),
+              builder: (context) => GeminiChat(),
             ),
           ),
         },

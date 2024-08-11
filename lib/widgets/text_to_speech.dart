@@ -5,13 +5,28 @@ import 'package:myapp/db/database_service.dart';
 import 'package:myapp/gemini/gemini_mindful.dart';
 import 'package:myapp/main.dart';
 import 'package:myapp/widgets/background_gradient.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MeditationApp extends ConsumerStatefulWidget {
+  final String meditationStyle;
+  final List<String> emotions;
+  final String journalContent;
+
+  const MeditationApp({
+    Key? key,
+    required this.meditationStyle,
+    required this.emotions,
+    required this.journalContent,
+  }) : super(key: key);
+
   @override
   _MeditationAppState createState() => _MeditationAppState();
 }
 
 class _MeditationAppState extends ConsumerState<MeditationApp> {
+  int _pauseDuration = 2;
+  double _voicePitch = 1.0;
+
   @override
   void initState() {
     super.initState();
@@ -19,12 +34,17 @@ class _MeditationAppState extends ConsumerState<MeditationApp> {
   }
 
   void _fetchMeditationContent() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final geminiService = ref.read(mindfulServiceProvider);
     await geminiService.getMindfullness(
-      "meditation",
-      "stress, anxiety",
-      "I felt overwhelmed today and need to relax.",
+      widget.meditationStyle,
+      widget.emotions.join(', '), // Pass emotions as a comma-separated string
+      widget.journalContent, // Pass journal content
     );
+    setState(() {
+      _pauseDuration = prefs.getInt('linePause') ?? 1;
+      _voicePitch = prefs.getDouble('playbackPitch') ?? 1.0;
+    });
   }
 
   @override
@@ -32,8 +52,13 @@ class _MeditationAppState extends ConsumerState<MeditationApp> {
     final mindfulResult = ref.watch(mindfulResultNotifier);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: mindfulResult != null
-          ? MeditationGuidePage(meditationSteps: mindfulResult.content)
+          ? MeditationGuidePage(
+              meditationSteps: mindfulResult.content,
+              voicePitch: _voicePitch,
+              pauseDuration: _pauseDuration,
+            )
           : LoadingScreen(),
     );
   }
@@ -41,8 +66,15 @@ class _MeditationAppState extends ConsumerState<MeditationApp> {
 
 class MeditationGuidePage extends StatefulWidget {
   final List<String> meditationSteps;
+  final double voicePitch;
+  final int pauseDuration;
 
-  const MeditationGuidePage({super.key, required this.meditationSteps});
+  const MeditationGuidePage({
+    super.key,
+    required this.meditationSteps,
+    required this.voicePitch,
+    required this.pauseDuration,
+  });
 
   @override
   State<MeditationGuidePage> createState() => _MeditationGuidePageState();
@@ -51,14 +83,14 @@ class MeditationGuidePage extends StatefulWidget {
 class _MeditationGuidePageState extends State<MeditationGuidePage> {
   final FlutterTts _flutterTts = FlutterTts();
   int _currentIndex = 0;
-  double _speechRate = 0.5; // Default speech rate for better fluency
-  double _pitch = 1.0; // Default pitch for natural tone
+  double _speechRate = 0.8; // Default speech rate for better fluency
 
   @override
   void initState() {
     super.initState();
     _flutterTts.setSpeechRate(_speechRate);
-    _flutterTts.setPitch(_pitch);
+    _flutterTts.setPitch(widget.voicePitch); // Use pitch from widget
+    _flutterTts.setLanguage('en-GB');
     _flutterTts.setCompletionHandler(_onComplete);
   }
 
@@ -66,39 +98,43 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
     if (widget.meditationSteps.isNotEmpty &&
         _currentIndex < widget.meditationSteps.length) {
       String textToSpeak = widget.meditationSteps[_currentIndex];
-      String ssmlText = '''
-      <speak>
-        ${textToSpeak}
-        <break time="2000ms"/>
-      </speak>
-    ''';
-      await _flutterTts.speak(ssmlText);
+      await _flutterTts.speak(textToSpeak);
     }
   }
 
-  void _onComplete() {
+  void _onComplete() async {
     setState(() {
       if (_currentIndex < widget.meditationSteps.length - 1) {
         _currentIndex++;
-        _speak();
       }
     });
+    await Future.delayed(Duration(
+        seconds: widget.pauseDuration)); // Use pause duration from widget
+    _speak();
   }
 
   void _stop() async {
     await _flutterTts.stop();
   }
 
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
+  }
+
   void _increaseSpeechRate() {
     setState(() {
-      _speechRate = (_speechRate + 0.1).clamp(0.1, 1.0); // Limit the max rate
+      _speechRate = (_speechRate + 0.1).clamp(0.1, 1.0);
+      _speechRate = double.parse(_speechRate.toStringAsFixed(1));
       _flutterTts.setSpeechRate(_speechRate);
     });
   }
 
   void _decreaseSpeechRate() {
     setState(() {
-      _speechRate = (_speechRate - 0.1).clamp(0.1, 1.0); // Limit the min rate
+      _speechRate = (_speechRate - 0.1).clamp(0.1, 1.0);
+      _speechRate = double.parse(_speechRate.toStringAsFixed(1));
       _flutterTts.setSpeechRate(_speechRate);
     });
   }
@@ -149,7 +185,10 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => MyApp()),
+              MaterialPageRoute(
+                  builder: (context) => MyApp(
+                        selectedIndex: 0,
+                      )),
             );
           },
         ),
@@ -215,27 +254,38 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
                         _currentIndex = 0; // Start from the beginning
                         _speak();
                       },
-                      child: const Text('Play'),
+                      child: const Icon(Icons.play_arrow), // Play icon
                     ),
                     const SizedBox(width: 10.0),
                     ElevatedButton(
                       onPressed: _stop,
-                      child: const Text('Stop'),
+                      child: const Icon(Icons.stop), // Stop icon
                     ),
                     const SizedBox(width: 10.0),
                     ElevatedButton(
                       onPressed: _decreaseSpeechRate,
-                      child: const Text('Slow Down'),
+                      child: const Icon(Icons.remove), // Slow Down icon
                     ),
                     const SizedBox(width: 10.0),
                     ElevatedButton(
                       onPressed: _increaseSpeechRate,
-                      child: const Text('Speed Up'),
+                      child: const Icon(Icons.add), // Speed Up icon
                     ),
                   ],
                 ),
-                Text(
-                    'Current Speech Rate: $_speechRate'), // Display current rate
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Speech Rate: ${_speechRate.toStringAsFixed(1)}x'),
+                    IconButton(
+                      icon: Icon(Icons.info_outline),
+                      tooltip: 'Adjusts the speed at which the text is spoken.',
+                      onPressed: () {
+                        // Optionally show a dialog or tooltip with more info
+                      },
+                    ),
+                  ],
+                ) // Display current rate
               ],
             ),
           ),
@@ -249,9 +299,12 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(children: [
-      const GradientBg(),
-      Center(child: CircularProgressIndicator()),
-    ]));
+      body: Stack(
+        children: [
+          const GradientBg(),
+          Center(child: CircularProgressIndicator()),
+        ],
+      ),
+    );
   }
 }

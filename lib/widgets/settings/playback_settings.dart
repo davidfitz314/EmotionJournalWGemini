@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:2071469947.
-class PlaybackSettingsSpeed extends StatefulWidget {
-  const PlaybackSettingsSpeed({super.key});
+class PlaybackSettingsPauseDuration extends StatefulWidget {
+  const PlaybackSettingsPauseDuration({super.key});
 
   @override
-  State<PlaybackSettingsSpeed> createState() => _PlaybackSettingsSpeedState();
+  State<PlaybackSettingsPauseDuration> createState() =>
+      _PlaybackSettingsPauseDurationState();
 }
 
-class _PlaybackSettingsSpeedState extends State<PlaybackSettingsSpeed> {
-  double _playbackSpeed = 1.0;
+class _PlaybackSettingsPauseDurationState
+    extends State<PlaybackSettingsPauseDuration> {
+  int _playbackLineBreakPause = 1;
+  final TextEditingController _controller = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -20,92 +23,134 @@ class _PlaybackSettingsSpeedState extends State<PlaybackSettingsSpeed> {
   _loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _playbackSpeed = (prefs.getDouble('playbackSpeed') ?? 1.0);
+      _playbackLineBreakPause = (prefs.getInt('linePause') ?? 1);
+      _controller.text = _playbackLineBreakPause.toString();
     });
   }
 
-  // ignore: unused_element
-  _saveSettings(double value) async {
+  _saveSettings(int value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setDouble('playbackSpeed', value);
+    prefs.setInt('linePause', value);
+  }
+
+  void _updatePauseDuration(String value) {
+    final int? newValue = int.tryParse(value);
+    if (newValue != null) {
+      setState(() {
+        _playbackLineBreakPause = newValue;
+        _saveSettings(newValue);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: <Widget>[
-      const Text(
-        'Playback Speed',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          backgroundColor: Color.fromARGB(0, 0, 0, 0),
+    return Row(
+      children: <Widget>[
+        const Text(
+          'Pause Duration (s)',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            backgroundColor: Color.fromARGB(0, 0, 0, 0),
+          ),
         ),
-      ),
-      const Spacer(),
-      Text("Placeholder: $_playbackSpeed")
-      // Switch(
-      //   value: _playbackSpeed.toString(),
-      //   onChanged: (value) {
-      //     setState(() {
-      //       _playbackSpeed = value;
-      //       _saveSettings(value);
-      //     });
-      //   },
-      // ),
-    ]);
+        const Spacer(),
+        SizedBox(
+          width: 80,
+          child: TextField(
+            controller: _controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 8),
+            ),
+            onChanged: _updatePauseDuration,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(" seconds"),
+      ],
+    );
   }
 }
 
-class PlaybackSettingsVoice extends StatefulWidget {
-  const PlaybackSettingsVoice({super.key});
+class PlaybackSettingsPitch extends StatefulWidget {
+  const PlaybackSettingsPitch({super.key});
 
   @override
-  State<PlaybackSettingsVoice> createState() => _PlaybackSettingsVoiceState();
+  State<PlaybackSettingsPitch> createState() => _PlaybackSettingsPitchState();
 }
 
-class _PlaybackSettingsVoiceState extends State<PlaybackSettingsVoice> {
-  String _playbackVoice = "voice 1";
+class _PlaybackSettingsPitchState extends State<PlaybackSettingsPitch> {
+  double _playbackVoice = 1.0;
+
   @override
   void initState() {
     super.initState();
     _loadSettings();
   }
 
-  _loadSettings() async {
+  Future<void> _loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _playbackVoice = (prefs.getString('playbackVoice') ?? 'voice 1');
+      _playbackVoice = (prefs.getDouble('playbackPitch') ?? 1.0);
     });
   }
 
-  // ignore: unused_element
-  _saveSettings(double value) async {
+  Future<void> _saveSettings(double value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setDouble('playbackVoice', value);
+    await prefs.setDouble('playbackPitch', value);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: <Widget>[
-      const Text(
-        'Playback Voice',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          backgroundColor: Color.fromARGB(0, 0, 0, 0),
+    return Row(
+      children: <Widget>[
+        const Text(
+          'Voice Pitch',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            backgroundColor: Color.fromARGB(0, 0, 0, 0),
+          ),
         ),
-      ),
-      const Spacer(),
-      Text("Placeholder: $_playbackVoice")
-      // Switch(
-      //   value: _playbackSpeed.toString(),
-      //   onChanged: (value) {
-      //     setState(() {
-      //       _playbackSpeed = value;
-      //       _saveSettings(value);
-      //     });
-      //   },
-      // ),
-    ]);
+        const Spacer(),
+        Expanded(
+          child: SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              activeTrackColor: Colors.lightBlueAccent, // Active track color
+              inactiveTrackColor: Colors.blueGrey[100], // Inactive track color
+              thumbColor:
+                  Colors.blue, // Color of the thumb (the draggable part)
+              overlayColor:
+                  Colors.blue.withOpacity(0.2), // Overlay color when dragging
+              valueIndicatorColor: Colors.blue, // Color of the value indicator
+              trackHeight: 4.0, // Thickness of the track
+            ),
+            child: Slider(
+              value: _playbackVoice,
+              min: 0.5,
+              max: 2.0,
+              divisions: 15,
+              label: _playbackVoice.toStringAsFixed(1),
+              onChanged: (value) {
+                setState(() {
+                  _playbackVoice = value;
+                });
+                _saveSettings(value);
+              },
+            ),
+          ),
+        ),
+        Text(
+          _playbackVoice.toStringAsFixed(1),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
   }
 }

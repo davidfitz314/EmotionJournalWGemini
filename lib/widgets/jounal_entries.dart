@@ -3,6 +3,7 @@ import 'package:myapp/db/database_service.dart';
 import 'package:myapp/widgets/background_gradient.dart';
 import 'package:myapp/widgets/gemini_chat.dart';
 import 'package:myapp/widgets/journal_entry_details.dart';
+import 'dart:math' as math;
 
 class JournalEntries extends StatefulWidget {
   const JournalEntries({super.key});
@@ -13,7 +14,6 @@ class JournalEntries extends StatefulWidget {
 class _JournalEntriesState extends State<JournalEntries> {
   final DatabaseEntryService _databaseService = DatabaseEntryService();
   List<Map<String, dynamic>> _entries = [];
-  // List<JournalModel> entries = [];
 
   @override
   void initState() {
@@ -28,10 +28,43 @@ class _JournalEntriesState extends State<JournalEntries> {
     });
   }
 
+  Future<void> _deleteEntry(String entryId) async {
+    await _databaseService.deleteEntry(entryId);
+    _fetchEntries(); // Refresh the list after deletion
+  }
+
+  void _showDeleteConfirmationDialog(String entryId) async {
+    bool? result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this entry?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      _deleteEntry(entryId);
+    }
+  }
+
   @override
   dispose() {
-    //close the database
-    // journalDb.close();
     super.dispose();
   }
 
@@ -68,24 +101,36 @@ class _JournalEntriesState extends State<JournalEntries> {
                                 child: Card(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          entry['title'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                entry['title'],
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineSmall,
+                                              ),
+                                              Text(
+                                                entry['createdDate'].toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
+                                              ),
+                                              Text(
+                                                "${entry['content'].toString().substring(0, math.min(entry['content'].toString().length, 130))}...",
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          entry['createdDate'].toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
-                                        ),
-                                        Text(
-                                          "${entry['content'].toString().substring(0, 130)}...",
+                                        IconButton(
+                                          icon: const Icon(Icons.delete),
+                                          onPressed: () =>
+                                              _showDeleteConfirmationDialog(
+                                                  entry['id']),
                                         ),
                                       ],
                                     ),
@@ -107,7 +152,7 @@ class _JournalEntriesState extends State<JournalEntries> {
           ),
         },
         tooltip: 'Chat',
-        backgroundColor: const Color(0xFF87CEFA),
+        backgroundColor: const Color(0xFFE0F7FA),
         child: const Icon(Icons.message),
       ),
     );

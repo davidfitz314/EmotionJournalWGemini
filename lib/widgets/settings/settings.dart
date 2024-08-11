@@ -36,11 +36,11 @@ class SettingsList extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(40, 0, 40, 20),
-                child: PlaybackSettingsSpeed(),
+                child: PlaybackSettingsPauseDuration(),
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(40, 0, 40, 30),
-                child: PlaybackSettingsVoice(),
+                child: PlaybackSettingsPitch(),
               ),
               SubtitleWithLine(title: "General Settings"),
               Padding(
