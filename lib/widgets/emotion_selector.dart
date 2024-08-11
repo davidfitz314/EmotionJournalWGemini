@@ -144,7 +144,7 @@ class _EmotionSelectorState extends State<EmotionSelector> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const MeditationGuidePage(),
+              builder: (context) => MeditationApp(),
             ),
           ),
         },
