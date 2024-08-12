@@ -13,13 +13,14 @@ class MeditationApp extends ConsumerStatefulWidget {
   final String journalContent;
 
   const MeditationApp({
-    Key? key,
+    super.key,
     required this.meditationStyle,
     required this.emotions,
     required this.journalContent,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _MeditationAppState createState() => _MeditationAppState();
 }
 
@@ -59,7 +60,7 @@ class _MeditationAppState extends ConsumerState<MeditationApp> {
               voicePitch: _voicePitch,
               pauseDuration: _pauseDuration,
             )
-          : LoadingScreen(),
+          : const LoadingScreen(),
     );
   }
 }
@@ -145,17 +146,17 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Enter Title'),
+          title: const Text('Enter Title'),
           content: TextField(
             controller: titleController,
-            decoration: InputDecoration(hintText: 'Meditation Title'),
+            decoration: const InputDecoration(hintText: 'Meditation Title'),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(titleController.text);
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -168,8 +169,9 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
         result,
         widget.meditationSteps,
       );
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Meditation saved as favorite!')),
+        const SnackBar(content: Text('Meditation saved as favorite!')),
       );
     }
   }
@@ -186,7 +188,7 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => MyApp(
+                  builder: (context) => const MyApp(
                         selectedIndex: 0,
                       )),
             );
@@ -194,7 +196,7 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.star),
+            icon: const Icon(Icons.star),
             onPressed: _saveFavoriteMeditation,
             tooltip: 'Save as Favorite',
           ),
@@ -278,7 +280,7 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
                   children: [
                     Text('Speech Rate: ${_speechRate.toStringAsFixed(1)}x'),
                     IconButton(
-                      icon: Icon(Icons.info_outline),
+                      icon: const Icon(Icons.info_outline),
                       tooltip: 'Adjusts the speed at which the text is spoken.',
                       onPressed: () {
                         // Optionally show a dialog or tooltip with more info
@@ -296,12 +298,14 @@ class _MeditationGuidePageState extends State<MeditationGuidePage> {
 }
 
 class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Stack(
         children: [
-          const GradientBg(),
+          GradientBg(),
           Center(child: CircularProgressIndicator()),
         ],
       ),

@@ -10,6 +10,7 @@ class JournalEntryDetails extends StatelessWidget {
 
   Future<void> _deleteEntry(BuildContext context, String entryId) async {
     await _databaseService.deleteEntry(entryId);
+    // ignore: use_build_context_synchronously
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
@@ -40,6 +41,7 @@ class JournalEntryDetails extends StatelessWidget {
     );
 
     if (result == true) {
+      // ignore: use_build_context_synchronously
       _deleteEntry(context, entryId);
     }
   }

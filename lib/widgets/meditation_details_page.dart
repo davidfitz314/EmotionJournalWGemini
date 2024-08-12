@@ -14,7 +14,7 @@ class MeditationDetailsPage extends StatefulWidget {
   });
 
   @override
-  _MeditationDetailsPageState createState() => _MeditationDetailsPageState();
+  State<MeditationDetailsPage> createState() => _MeditationDetailsPageState();
 }
 
 class _MeditationDetailsPageState extends State<MeditationDetailsPage> {
@@ -167,7 +167,7 @@ class _MeditationDetailsPageState extends State<MeditationDetailsPage> {
                   children: [
                     Text('Speech Rate: ${_speechRate.toStringAsFixed(1)}x'),
                     IconButton(
-                      icon: Icon(Icons.info_outline),
+                      icon: const Icon(Icons.info_outline),
                       tooltip: 'Adjusts the speed at which the text is spoken.',
                       onPressed: () {
                         // Optionally show a dialog or tooltip with more info

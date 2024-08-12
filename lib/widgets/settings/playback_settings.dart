@@ -61,7 +61,7 @@ class _PlaybackSettingsPauseDurationState
           child: TextField(
             controller: _controller,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 8),
             ),
@@ -69,7 +69,7 @@ class _PlaybackSettingsPauseDurationState
           ),
         ),
         const SizedBox(width: 8),
-        Text(" seconds"),
+        const Text(" seconds"),
       ],
     );
   }

@@ -79,7 +79,7 @@ class _EmotionSelectorState extends State<EmotionSelector> {
   }
 
   void _showConfirmationDialog() async {
-    bool? result = await showDialog<bool>(
+    await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -101,20 +101,20 @@ class _EmotionSelectorState extends State<EmotionSelector> {
                   ),
                 );
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyApp(
+                    builder: (context) => const MyApp(
                         selectedIndex:
                             1), // Update this if you have a specific JournalEntries widget
                   ),
                 );
               },
-              child: Text('No'),
+              child: const Text('No'),
             ),
           ],
         );
@@ -203,7 +203,7 @@ class _EmotionSelectorState extends State<EmotionSelector> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => GeminiChat(),
+              builder: (context) => const GeminiChat(),
             ),
           ),
         },

@@ -8,6 +8,7 @@ class FavoriteMeditationsPage extends ConsumerStatefulWidget {
   const FavoriteMeditationsPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _FavoriteMeditationsPageState createState() =>
       _FavoriteMeditationsPageState();
 }
@@ -89,28 +90,28 @@ class _FavoriteMeditationsPageState
                           );
                         },
                         trailing: IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () async {
                             // Show a confirmation dialog
                             bool? confirmDelete = await showDialog<bool>(
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: Text('Delete Meditation'),
-                                  content: Text(
+                                  title: const Text('Delete Meditation'),
+                                  content: const Text(
                                       'Are you sure you want to delete this meditation?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop(false);
                                       },
-                                      child: Text('Cancel'),
+                                      child: const Text('Cancel'),
                                     ),
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop(true);
                                       },
-                                      child: Text('Delete'),
+                                      child: const Text('Delete'),
                                     ),
                                   ],
                                 );
