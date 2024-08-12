@@ -2,28 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const List<String> list = <String>[
-  'Mindfulness',
-  'Yoga',
-  'Kundalini',
-  'Chinese Medicine',
-  'Qi Gong',
-  'Reiki',
-  'Chakras',
-  'Self-Hypnosis',
-  'Affirmations',
-  'Breathwork',
-  'Meditation',
-  'Cognitive Behavioral Therapy'
+  "Listening",
+  "Empathy",
+  "Communication",
+  "Assessment",
+  "Goal Setting",
+  "Coping Strategies",
+  "Behavioral Interventions",
+  "Cognitive Restructuring",
+  "Emotional Regulation",
+  "Crisis Intervention",
+  "Supportive Feedback",
+  "Mindfulness and Relaxation",
+  "Relationship Issues",
+  "Self-Esteem Building",
+  "Education"
 ];
 
-class MeditationSelector extends StatefulWidget {
-  const MeditationSelector({super.key});
+class ChatFocusSelector extends StatefulWidget {
+  const ChatFocusSelector({super.key});
 
   @override
-  State<MeditationSelector> createState() => _MeditationSelectorState();
+  State<ChatFocusSelector> createState() => _ChatFocusSelectorState();
 }
 
-class _MeditationSelectorState extends State<MeditationSelector> {
+class _ChatFocusSelectorState extends State<ChatFocusSelector> {
   String _meditationStyleSelection = list.first;
 
   @override
@@ -36,13 +39,13 @@ class _MeditationSelectorState extends State<MeditationSelector> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _meditationStyleSelection =
-          (prefs.getString('meditationStyleSelection') ?? list.first);
+          (prefs.getString('chatFocusSelection') ?? list.first);
     });
   }
 
   _saveSettings(String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('meditationStyleSelection', value);
+    prefs.setString('chatFocusSelection', value);
   }
 
   @override
@@ -51,7 +54,7 @@ class _MeditationSelectorState extends State<MeditationSelector> {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           const Text(
-            'Mindful Activity Focus',
+            'Chat Expertise',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/widgets/background_gradient.dart';
+import 'package:myapp/widgets/settings/chat_selector.dart';
 import 'package:myapp/widgets/settings/general_settings.dart';
 import 'package:myapp/widgets/settings/meditation_selector.dart';
 import 'package:myapp/widgets/settings/playback_settings.dart';
@@ -33,6 +34,10 @@ class SettingsList extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.fromLTRB(40, 0, 40, 10),
                 child: MeditationSelector(),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 10),
+                child: ChatFocusSelector(),
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(40, 0, 40, 20),

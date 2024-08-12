@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:myapp/gemini/gemini_mindful.dart';
 import 'package:myapp/widgets/background_gradient.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ChatResultPayload model to store the chat response
 class ChatResultPayload {
@@ -29,7 +30,7 @@ class GeminiChatService {
 
   // Method to get a chat reply from the generative AI model
   Future<void> getChatReply(
-      String userMessage, List<ChatMessage> oldMessages) async {
+      String userMessage, List<ChatMessage> oldMessages, String focus) async {
     StringBuffer buffer = StringBuffer();
     int numberOfMessagesToInclude = 10;
 
@@ -64,6 +65,7 @@ class GeminiChatService {
 
       final content = Content.text('''
         You are a mental health counselor offering a listening ear to users who want to talk about their feelings. Respond empathetically and provide thoughtful feedback based on the user's message.
+        Your expertise are in $focus .
         Please reply only to the content string in "userMessage".
         Past message context will be partially provided after the key "oldMessages" in order to help maintain the conversaiont flow.
         all replies must be in the form of a JSON payload response containing the following properties:
@@ -103,6 +105,22 @@ class GeminiChat extends ConsumerStatefulWidget {
 class _GeminiChatState extends ConsumerState<GeminiChat> {
   final TextEditingController _messageController = TextEditingController();
   final List<ChatMessage> _messages = [];
+  String focus = "listening";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFocusSelection();
+  }
+
+  // Load the chat focus selection from SharedPreferences
+  void _loadFocusSelection() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      focus = prefs.getString('chatFocusSelection') ??
+          "listening"; // Default to empty string if not set
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +170,9 @@ class _GeminiChatState extends ConsumerState<GeminiChat> {
       _messageController.clear();
 
       // Get chat reply
-      await ref.read(chatServiceProvider).getChatReply(message, _messages);
+      await ref
+          .read(chatServiceProvider)
+          .getChatReply(message, _messages, focus);
 
       // Add chat response
       final chatReply = ref.read(chatResultNotifier)?.content;
